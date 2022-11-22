@@ -2,8 +2,13 @@ import Head from "next/head";
 import { Box, Center, Spacer, Stack } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import styles from "../styles/Home.module.css";
+import NavBar from "../components/NavBar";
+import Disconnected from "../components/Disconnected";
+import Connected from "../components/Connected";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const Home: NextPage = () => {
+  const { connected } = useWallet();
   return (
     <div className={styles.container}>
       <Head>
@@ -14,10 +19,10 @@ const Home: NextPage = () => {
 
       <Box w="full" h="calc(100vh)" bgImage={"url(/home-background.svg)"} backgroundPosition="center">
         <Stack w="full" h="calc(100vh)" justify="center">
-          {/* NavBar */}
+          <NavBar />
 
           <Spacer />
-          <Center>{/* If connected, the second view, otherwise the first */}</Center>
+          <Center>{connected ? <Connected /> : <Disconnected />}</Center>
           <Spacer />
 
           <Center>
