@@ -7,15 +7,18 @@ import { PublicKey } from "@solana/web3.js";
 import { useRouter } from "next/router";
 
 const Connected: FC = () => {
+  const [candyMachine, setCandyMachine] = useState<CandyMachine>();
+  const [isMinting, setIsMinting] = useState(false);
+
   const { connection } = useConnection();
   const wallet = useWallet();
-  const [candyMachine, setCandyMachine] = useState<CandyMachine>();
 
   const metaplex = useMemo(() => {
     return Metaplex.make(connection).use(walletAdapterIdentity(wallet));
   }, [connection, wallet]);
 
   useEffect(() => {
+    if (!metaplex) return;
     metaplex
       .candyMachines()
       .findByAddress({ address: new PublicKey("BFp2iF6poCEUZFXoAqGxYHVEmrx1rd6S5TxTnUnMyzzf") })
@@ -37,14 +40,16 @@ const Connected: FC = () => {
       if (!wallet.connected || !candyMachine) return;
 
       try {
+        setIsMinting(true);
         const nft = await metaplex.candyMachines().mint({ candyMachine }).run();
         console.log(nft);
         router.push(`/newMint?mint=${nft.nft.address.toBase58()}`);
       } catch (err) {
         alert(err);
+        setIsMinting(false);
       }
     },
-    [metaplex, candyMachine]
+    [metaplex, wallet, candyMachine]
   );
 
   return (
@@ -68,7 +73,7 @@ const Connected: FC = () => {
         <Image src="avatar5.png" alt="" />
       </HStack>
 
-      <Button bgColor="accent" color="white" maxW="300px" onClick={handleClick}>
+      <Button bgColor="accent" color="white" maxW="300px" onClick={handleClick} isLoading={isMinting}>
         <HStack>
           <Text>Mint buildoor</Text>
           <ArrowForwardIcon />

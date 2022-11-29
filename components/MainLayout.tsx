@@ -32,7 +32,7 @@ const MainLayout: FC<{ children: ReactNode }> = ({ children }) => {
           <Center>
             <Box marginBottom={4} color="white">
               <a href="https://twitter.com/_buildspace" target="_blank" rel="noopener noreferrer">
-                built with @_buildspace
+                built by Qroxyn
               </a>
             </Box>
           </Center>
